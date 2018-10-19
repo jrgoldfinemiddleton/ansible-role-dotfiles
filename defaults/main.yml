@@ -1,0 +1,14 @@
+---
+# dotfiles/defaults/main.yml
+
+dotfiles_repo_url: https://github.com/jrgoldfinemiddleton/dotfiles.git
+dotfiles_repo_version: master
+dotfiles_repo_accept_hostkey: no
+dotfiles_repo_local_dest: ~/Developer/dotfiles
+
+dotfiles_home: ~
+dotfiles_files:
+  - .gitconfig
+  - .tmux.conf
+  - .vim
+  - .vimrc

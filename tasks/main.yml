@@ -1,0 +1,37 @@
+---
+# dotfiles/tasks/main.yml
+
+- name: Ensure dotfiles repository is cloned
+  git:
+    repo: "{{ dotfiles_repo_url }}"
+    dest: "{{ dotfiles_repo_local_dest }}"
+    version: "{{ dotfiles_repo_version }}"
+    accept_hostkey: "{{ dotfiles_repo_accept_hostkey }}"
+  become: false
+
+- name: Gather filetypes for local dotfiles
+  command: "ls -F {{ dotfiles_home }}/{{ item }}"
+  register: dotfiles_reg_existing_dotfile_types
+  failed_when: false
+  check_mode: false
+  changed_when: false
+  loop: "{{ dotfiles_files }}"
+
+- name: Display listing variable
+  debug:
+    var: dotfiles_reg_existing_dotfile_types.results
+
+- name: Remove existing local dotfiles that are not links
+  file:
+    path: "{{ dotfiles_home }}/{{ dotfiles_files[item.0] }}"
+    state: absent
+  when: "'@' not in item.1.stdout"
+  with_indexed_items: "{{ dotfiles_reg_existing_dotfile_types.results }}"
+
+- name: Link dotfiles from repository to home directory
+  file:
+    src: "{{ dotfiles_repo_local_dest }}/{{ item }}"
+    dest: "{{ dotfiles_home }}/{{ item }}"
+    state: link
+  become: false
+  loop: "{{ dotfiles_files }}"
