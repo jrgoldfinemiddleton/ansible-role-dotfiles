@@ -17,10 +17,6 @@
   changed_when: false
   loop: "{{ dotfiles_files }}"
 
-- name: Display listing variable
-  debug:
-    var: dotfiles_reg_existing_dotfile_types.results
-
 - name: Remove existing local dotfiles that are not links
   file:
     path: "{{ dotfiles_home }}/{{ dotfiles_files[item.0] }}"
